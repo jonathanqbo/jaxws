@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:jaxws="http://cxf.apache.org/jaxws"
+  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+ 
+  
+  <!-- Scan classpath for annotations (eg: @Service, @Repository etc) -->
+  <context:component-scan base-package="bq.spring.**.dao"/>
+  <context:component-scan base-package="bq.spring.**.service"/>
+  
+  <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+   
+  <!-- JDBC Data Source. It is assumed you have MySQL running on localhost port 3306 with 
+       username root and blank password. Change below if it's not the case -->
+  <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    <property name="url" value="jdbc:mysql://localhost:3306/pizzashop"/>
+    <property name="username" value="root"/>
+    <property name="password" value="1"/>
+    <property name="validationQuery" value="SELECT 1"/>
+  </bean>
+  
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" p:dataSource-ref="myDataSource">
+  </bean>
+  
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" p:dataSource-ref="myDataSource">
+  </bean>
+  
+  <!-- CXF webservice -->
+  <import resource="classpath:META-INF/cxf/cxf.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+ 
+  <!-- define service that need to be published -->
+  <jaxws:endpoint id="echoService" implementor="bq.cxf.tutorial.simple1.server.EchoServiceImpl" address="/echo"/>
+  
+  <!-- client -->
+  <jaxws:client id="echoServiceClient" serviceClass="bq.cxf.tutorial.simple1.server.EchoService" address="http://localhost:9002/HelloWorld" />
+</beans>
