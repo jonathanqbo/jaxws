@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://bq.cxf.tutorial/echoservicewithheader/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="echoservicewithheader" targetNamespace="http://bq.cxf.tutorial/echoservicewithheader/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://bq.cxf.tutorial/echoservicewithheader/">
+      <xsd:complexType name="MessageHeader">
+      	<xsd:sequence>
+      		<xsd:element type="xsd:string" name="sender" maxOccurs="1" minOccurs="1"/>
+      		<xsd:element type="xsd:string" name="isEncypt" maxOccurs="1" minOccurs="1"/>
+      	</xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Message">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="content" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="message" type="tns:Message"/>
+      <xsd:element name="messageHeader" type="tns:MessageHeader"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="echoHeaderRequest">
+    <wsdl:part element="tns:message" name="message"/>
+    <wsdl:part element="tns:messageHeader" name="header"/>
+  </wsdl:message>
+  <wsdl:message name="echoHeaderResponse">
+    <wsdl:part element="tns:message" name="returnMessage"/>
+    <wsdl:part element="tns:messageHeader" name="returnHeader"/>
+  </wsdl:message>
+  <wsdl:portType name="echoHeaderServicePortType">
+    <wsdl:operation name="echoHeader">
+      <wsdl:input message="tns:echoHeaderRequest" name="echoHeaderRequest"/>
+      <wsdl:output message="tns:echoHeaderResponse" name="echoHeaderResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="echoheaderSOAP" type="tns:echoHeaderServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echoHeader">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoheaderservice/echoHeader" style="document"/>
+      <wsdl:input name="echoHeaderRequest">
+        <soap:body parts="message" use="literal"/>
+        <soap:header use="literal" part="header" message="tns:echoHeaderRequest"></soap:header>
+      </wsdl:input>
+      <wsdl:output name="echoHeaderResponse">
+        <soap:body parts="returnMessage" use="literal"/>
+        <soap:header use="literal" part="returnHeader" message="tns:echoHeaderResponse"></soap:header>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="echoHeaderService">
+    <wsdl:port binding="tns:echoheaderSOAP" name="echoheaderserviceSOAP">
+      <soap:address location="http://www.example.org/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

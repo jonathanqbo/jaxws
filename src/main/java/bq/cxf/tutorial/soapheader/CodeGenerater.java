@@ -22,9 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.cxf.tutorial.simple1.server;
+package bq.cxf.tutorial.soapheader;
 
-import javax.jws.WebService;
+import org.junit.Test;
+
+import bq.cxf.tutorial.util.WsdlToJava;
 
 /**
  * <b>  </b>
@@ -33,16 +35,23 @@ import javax.jws.WebService;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at Feb 19, 2014 10:27:41 PM
+ * Created at Feb 24, 2014 10:48:41 AM
  *
  */
-@WebService(endpointInterface="bq.cxf.tutorial.simple1.server.EchoService")
-public class EchoServiceImpl implements EchoService{
+public class CodeGenerater {
 
-	@Override
-	public String echo(String msg) {
-		System.out.println("echo msg : " + msg);
-		return msg;
+//	@Test
+	public void genSever(){
+		String wsdl = "src/main/resource/bq/cxf/tutorial/soapheader/echoservicewithheader.wsdl";
+		String packagepath = "bq.cxf.tutorial.soapheader.server.gen";
+		WsdlToJava.generateServer(wsdl, packagepath);
 	}
-
+	
+	@Test
+	public void genClient(){
+		String wsdl = "http://localhost:9999/jaxws/ws/echoheaderservice?wsdl";
+		String packagepath = "bq.cxf.tutorial.soapheader.client.gen";
+		WsdlToJava.generateClient(wsdl, packagepath);
+	}
+	
 }

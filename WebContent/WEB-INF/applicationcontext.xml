@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:jaxws="http://cxf.apache.org/jaxws"
+  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+ 
+  
+  <!-- Scan classpath for annotations (eg: @Service, @Repository etc) -->
+  <context:component-scan base-package="bq.spring.**.dao"/>
+  <context:component-scan base-package="bq.spring.**.service"/>
+  
+  <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+   
+  <!-- CXF webservice -->
+  <import resource="classpath:META-INF/cxf/cxf.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+  <!-- don't need, or there are some warning when server starting -->
+  <!-- import resource="classpath*:META-INF/cxf/cxf-extension-*.xml" /-->
+ 
+  <!-- publish echo service basically -->
+  <jaxws:endpoint id="echoService" implementor="bq.cxf.tutorial.simple1.EchoServiceImpl" address="/echoservice"/>
+  <jaxws:client id="echoServiceClient" serviceClass="bq.cxf.tutorial.simple1.EchoService" address="http://localhost:8080/jaxws/ws/echoservice"/>
+
+  <!-- wsdl first service -->
+  <jaxws:endpoint id="echoServiceWsdlfirst" wsdlLocation="bq/cxf/tutorial/wsdlfirst/echoservice.wsdl"  implementor="bq.cxf.tutorial.wsdlfirst.server.gen.EchoserviceImpl" address="/echoservicewsdlfirst"/>
+
+  <!-- logging interceptor -->
+  <bean id="loginInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+  <bean id="logoutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+  
+  <!-- gzip interceptor-->
+  <bean id="gzipinInterceptor" class="org.apache.cxf.transport.common.gzip.GZIPInInterceptor"/>
+  <bean id="gzipoutInterceptor" class="org.apache.cxf.transport.common.gzip.GZIPOutInterceptor"/>
+  
+  
+  <!-- publish echo service with logging intercepter -->
+  <jaxws:endpoint id="logEchoService" implementor="bq.cxf.tutorial.simple1.EchoServiceImpl" address="/logechoservice">
+  	<jaxws:inInterceptors>
+  		<ref bean="loginInterceptor"/>
+  	</jaxws:inInterceptors>
+  	<jaxws:outInterceptors>
+  		<ref bean="logoutInterceptor"/>
+  	</jaxws:outInterceptors>
+  </jaxws:endpoint>
+  <jaxws:client id="logEchoServiceClient" serviceClass="bq.cxf.tutorial.simple1.EchoService" address="http://localhost:8080/jaxws/ws/logechoservice">
+	<jaxws:inInterceptors>
+  		<ref bean="loginInterceptor"/>
+  	</jaxws:inInterceptors>
+  	<jaxws:outInterceptors>
+  		<ref bean="logoutInterceptor"/>
+  	</jaxws:outInterceptors>
+  </jaxws:client>
+  
+  <!-- publish echo service with logging and gzip intercepter -->
+  <jaxws:endpoint id="zipEchoService" implementor="bq.cxf.tutorial.simple1.EchoServiceImpl" address="/logzipechoservice">
+  	<jaxws:inInterceptors>
+  		<ref bean="loginInterceptor"/>
+  		<ref bean="gzipinInterceptor"/>
+  	</jaxws:inInterceptors>
+  	<jaxws:outInterceptors>
+  		<ref bean="logoutInterceptor"/>
+  		<ref bean="gzipoutInterceptor"/>
+  	</jaxws:outInterceptors>
+  </jaxws:endpoint>
+  <jaxws:client id="zipEchoServiceClient" serviceClass="bq.cxf.tutorial.simple1.EchoService" address="http://localhost:9999/jaxws/ws/logzipechoservice">
+	<jaxws:inInterceptors>
+  		<ref bean="loginInterceptor"/>
+  		<ref bean="gzipinInterceptor"/>
+  	</jaxws:inInterceptors>
+  	<jaxws:outInterceptors>
+  		<ref bean="logoutInterceptor"/>
+  		<ref bean="gzipoutInterceptor"/>
+  	</jaxws:outInterceptors>
+  </jaxws:client>
+  
+  <!-- encrypt and signature, there are two ways to achieve this function -->
+  
+  <!-- method 1: by interceptor, not recommend -->
+  <!-- server side -->
+  <bean id="serverWss4jInInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+        <constructor-arg>
+            <map>
+                <entry key="action" value="Timestamp Signature Encrypt"/>
+                <entry key="signaturePropFile" value="bq/cxf/tutorial/wssecurity/properties/server_sign_verf.properties"/>
+                <entry key="decryptionPropFile" value="bq/cxf/tutorial/wssecurity/properties/server_decrypt.properties"/>
+                <entry key="passwordCallbackClass" value="bq.cxf.tutorial.wssecurity.server.UTPasswordCallback"/>
+                <entry key="encryptionKeyTransportAlgorithm" value="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
+                <entry key="signatureAlgorithm" value="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+            </map>
+        </constructor-arg>
+  </bean>
+  <bean id="serverWss4jOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+        <constructor-arg>
+            <map>
+                <entry key="action" value="Timestamp Signature Encrypt"/>
+                <entry key="encryptionUser" value="useReqSigCert"/>
+                <entry key="signatureUser" value="server"/>
+                <entry key="passwordCallbackClass" value="bq.cxf.tutorial.wssecurity.server.UTPasswordCallback"/>
+                <entry key="signaturePropFile" value="bq/cxf/tutorial/wssecurity/properties/server_decrypt.properties"/>
+                <entry key="encryptionPropFile" value="bq/cxf/tutorial/wssecurity/properties/server_sign_verf.properties"/>
+                <entry key="encryptionKeyTransportAlgorithm" value="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
+                <entry key="signatureAlgorithm" value="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                <entry key="encryptionParts" value="{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body"/>
+                <entry key="signatureParts" value="{Element}{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd}Timestamp;{Element}{http://schemas.xmlsoap.org/soap/envelope/}Body;"/>
+            </map>
+        </constructor-arg>
+  </bean>
+  <jaxws:endpoint id="wssecurityservice1" implementor="bq.cxf.tutorial.wssecurity.server.gen.EchoserviceImpl" address="/wssecurityservice1" wsdlLocation="bq/cxf/tutorial/wssecurity/echoservice.wsdl">
+        <jaxws:outInterceptors>
+            <ref bean="serverWss4jOutInterceptor"/>
+        </jaxws:outInterceptors>
+        <jaxws:inInterceptors>
+            <ref bean="serverWss4jInInterceptor"/>
+            <bean class="org.apache.cxf.ws.security.wss4j.DefaultCryptoCoverageChecker"/>
+        </jaxws:inInterceptors>
+    </jaxws:endpoint>
+    <!-- client side -->
+  	<bean id="clientWss4jInInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+        <constructor-arg>
+            <map>
+                <entry key="action" value="Timestamp Signature Encrypt"/>
+                <entry key="signaturePropFile" value="bq/cxf/tutorial/wssecurity/properties/client_encrypt.properties"/>
+                <entry key="decryptionPropFile" value="bq/cxf/tutorial/wssecurity/properties/client_sign.properties"/>
+                <entry key="passwordCallbackClass" value="bq.cxf.tutorial.wssecurity.client.UTPasswordCallback"/>
+                <entry key="encryptionKeyTransportAlgorithm" value="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
+                <entry key="signatureAlgorithm" value="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+            </map>
+        </constructor-arg>
+  </bean>
+  <bean id="clientWss4jOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+        <constructor-arg>
+            <map>
+                <entry key="action" value="Timestamp Signature Encrypt"/>
+                <entry key="signatureUser" value="client"/>
+                <entry key="encryptionUser" value="server"/>
+                <entry key="signaturePropFile" value="bq/cxf/tutorial/wssecurity/properties/client_sign.properties"/>
+                <entry key="encryptionPropFile" value="bq/cxf/tutorial/wssecurity/properties/client_encrypt.properties"/>
+                <entry key="passwordCallbackClass" value="bq.cxf.tutorial.wssecurity.client.UTPasswordCallback"/>
+                <entry key="encryptionKeyTransportAlgorithm" value="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
+                <entry key="signatureAlgorithm" value="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                <entry key="encryptionParts" value="{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body"/>
+                <entry key="signatureParts" value="{Element}{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd}Timestamp;{Element}{http://schemas.xmlsoap.org/soap/envelope/}Body;"/>
+            </map>
+        </constructor-arg>
+  </bean>
+  <jaxws:client id="wssecurityclient1" serviceClass="bq.cxf.tutorial.wssecurity.server.gen.Echoservice" address="http://localhost:8080/jaxws/ws/wssecurityservice1">
+	<jaxws:inInterceptors>
+        <ref bean="clientWss4jInInterceptor"/>
+        <bean class="org.apache.cxf.ws.security.wss4j.DefaultCryptoCoverageChecker"/>
+    </jaxws:inInterceptors>
+    <jaxws:outInterceptors>
+        <ref bean="clientWss4jOutInterceptor"/>
+    </jaxws:outInterceptors>
+  </jaxws:client>
+  
+  <!-- method 2 : recommend-->
+  <!-- server -->
+  <jaxws:endpoint id="wssecurityservice2"
+	implementor="bq.cxf.tutorial.wssecuritypolicy.server.gen.EchoserviceImpl"
+	address="/securitypolicyechoservice" 
+	wsdlLocation="bq/cxf/tutorial/wssecuritypolicy/echoservice.wsdl">
+        <jaxws:properties>
+        	<entry key="ws-security.action" value="Timestamp Signature Encrypt"/>
+            <entry key="ws-security.callback-handler" value="bq.cxf.tutorial.wssecurity.server.UTPasswordCallback"/> 
+            <entry key="ws-security.encryption.properties" value="bq/cxf/tutorial/wssecurity/properties/server_sign_verf.properties"/>
+            <entry key="ws-security.signature.properties" value="bq/cxf/tutorial/wssecurity/properties/server_decrypt.properties"/>
+			<!-- Of special note is the useReqSigCert value for the encryptionUser parameter 
+				in the WSS4JOutInterceptor above. When this value is used instead of a specific 
+				client key alias, it tells the service to use the same key that was used 
+				to sign the SOAP request. This allows the service to handle any client whose 
+				public key is in the service's truststore. -->
+            <entry key="ws-security.encryption.username" value="useReqSigCert"/>
+        </jaxws:properties>
+  </jaxws:endpoint>
+  <!-- client -->
+  <jaxws:client id="wssecurityclient2" name="{http://bq.cxf.tutorial/echoservice}echoserviceSOAP"
+	address="http://localhost:9999/jaxws/ws/securitypolicyechoservice"
+	createdFromAPI="true">
+        <jaxws:properties>
+        	<entry key="ws-security.action" value="Timestamp Signature Encrypt"/>
+            <entry key="ws-security.callback-handler" value="bq.cxf.tutorial.wssecurity.client.UTPasswordCallback"/>        
+            <entry key="ws-security.encryption.properties" value="bq/cxf/tutorial/wssecurity/properties/client_encrypt.properties"/>
+            <entry key="ws-security.signature.properties" value="bq/cxf/tutorial/wssecurity/properties/client_sign.properties"/>
+            <entry key="ws-security.encryption.username" value="server"/>
+        </jaxws:properties>
+  </jaxws:client>
+        
+</beans>

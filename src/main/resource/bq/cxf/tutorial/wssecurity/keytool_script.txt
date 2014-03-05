@@ -1,0 +1,166 @@
+boqi@ubuntu:~/dev$ keytool -genkey -alias client -keypass client_password -keystore client_keystore.jks -storepass client_keystore_password -keyalg RSA
+What is your first and last name?
+  [Unknown]:  client
+What is the name of your organizational unit?
+  [Unknown]:  cxf
+What is the name of your organization?
+  [Unknown]:  bq
+What is the name of your City or Locality?
+  [Unknown]:  New York
+What is the name of your State or Province?
+  [Unknown]:  NY
+What is the two-letter country code for this unit?
+  [Unknown]:  US
+Is CN=client, OU=cxf, O=bq, L=New York, ST=NY, C=US correct?
+  [no]:  yes
+
+boqi@ubuntu:~/dev$ keytool -genkey -alias server -keypass server_password -keystore server_keystore.jks -storepass server_keystore_password -keyalg RSA
+What is your first and last name?
+  [Unknown]:  server
+What is the name of your organizational unit?
+  [Unknown]:  cxf
+What is the name of your organization?
+  [Unknown]:  bq
+What is the name of your City or Locality?
+  [Unknown]:  New York
+What is the name of your State or Province?
+  [Unknown]:  NY
+What is the two-letter country code for this unit?
+  [Unknown]:  US
+Is CN=server, OU=cxf, O=bq, L=New York, ST=NY, C=US correct?
+  [no]:  yes
+
+boqi@ubuntu:~/dev$ keytool -export -alias server -file server_pubkey.rsa -keystore server_keystore.jks -storepass server_keystore_password
+Certificate stored in file <server_pubkey.rsa>
+boqi@ubuntu:~/dev$ keytool -export -alias client -file client_pubkey.rsa -keystore client_keystore.jks -storepass client_keystore_password
+Certificate stored in file <client_pubkey.rsa>
+boqi@ubuntu:~/dev$ keytool -import -alias server -file server_pubkey.rsa -keystore client_truststore.jks -storepass client_truststore_password
+Owner: CN=server, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Issuer: CN=server, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Serial number: 55f60bbb
+Valid from: Wed Feb 26 21:28:27 EST 2014 until: Tue May 27 22:28:27 EDT 2014
+Certificate fingerprints:
+	 MD5:  F8:81:C3:5C:36:70:36:35:1B:1C:42:C5:FE:72:66:3A
+	 SHA1: 80:09:A4:F8:9D:94:23:07:17:6B:83:A3:D0:72:AC:AE:05:0C:A1:37
+	 SHA256: 36:69:B6:50:56:91:EA:E5:95:9B:E9:5F:80:41:21:28:1D:FF:22:01:62:31:5E:63:B7:5E:2F:20:C1:97:87:80
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: DA 1F AB C0 33 16 28 64   90 FA B2 41 BE 03 B1 A7  ....3.(d...A....
+0010: 8E 5B 70 5A                                        .[pZ
+]
+]
+
+Trust this certificate? [no]:  yes 
+Certificate was added to keystore
+boqi@ubuntu:~/dev$ keytool -import -alias client -file client_pubkey.rsa -keystore client_truststore.jks -storepass client_truststore_password
+Owner: CN=client, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Issuer: CN=client, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Serial number: 563396c2
+Valid from: Wed Feb 26 21:26:58 EST 2014 until: Tue May 27 22:26:58 EDT 2014
+Certificate fingerprints:
+	 MD5:  C7:31:DD:45:F6:B7:6D:2E:06:A1:69:B8:C0:09:E2:94
+	 SHA1: C1:AC:BC:64:80:75:9A:B0:63:78:E0:3F:84:8C:BF:20:D8:2C:73:67
+	 SHA256: E5:DF:80:F7:36:7C:EA:D0:C2:32:25:5E:D2:71:6B:10:A4:03:CF:CC:73:8A:29:5E:91:50:63:11:31:7A:B5:E1
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 3F 86 3E 4A 74 E3 A7 0A   75 02 B1 E5 33 D3 FB 0F  ?.>Jt...u...3...
+0010: AF 6B 2E A0                                        .k..
+]
+]
+
+Trust this certificate? [no]:  yes
+Certificate was added to keystore
+boqi@ubuntu:~/dev$ keytool -list -keystore client_truststore.jks -storepass client_truststore_password
+
+Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 2 entries
+
+client, Feb 26, 2014, trustedCertEntry, 
+Certificate fingerprint (SHA1): C1:AC:BC:64:80:75:9A:B0:63:78:E0:3F:84:8C:BF:20:D8:2C:73:67
+server, Feb 26, 2014, trustedCertEntry, 
+Certificate fingerprint (SHA1): 80:09:A4:F8:9D:94:23:07:17:6B:83:A3:D0:72:AC:AE:05:0C:A1:37
+boqi@ubuntu:~/dev$ keytool -import -alias server -file server_pubkey.rsa -keystore server_truststore.jks -storepass server_truststore_password
+Owner: CN=server, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Issuer: CN=server, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Serial number: 55f60bbb
+Valid from: Wed Feb 26 21:28:27 EST 2014 until: Tue May 27 22:28:27 EDT 2014
+Certificate fingerprints:
+	 MD5:  F8:81:C3:5C:36:70:36:35:1B:1C:42:C5:FE:72:66:3A
+	 SHA1: 80:09:A4:F8:9D:94:23:07:17:6B:83:A3:D0:72:AC:AE:05:0C:A1:37
+	 SHA256: 36:69:B6:50:56:91:EA:E5:95:9B:E9:5F:80:41:21:28:1D:FF:22:01:62:31:5E:63:B7:5E:2F:20:C1:97:87:80
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: DA 1F AB C0 33 16 28 64   90 FA B2 41 BE 03 B1 A7  ....3.(d...A....
+0010: 8E 5B 70 5A                                        .[pZ
+]
+]
+
+Trust this certificate? [no]:  yes
+Certificate was added to keystore
+boqi@ubuntu:~/dev$ keytool -list -keystore server_truststore.jks -storepass server_truststore_password
+
+Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 1 entry
+
+server, Feb 26, 2014, trustedCertEntry, 
+Certificate fingerprint (SHA1): 80:09:A4:F8:9D:94:23:07:17:6B:83:A3:D0:72:AC:AE:05:0C:A1:37
+boqi@ubuntu:~/dev$ ^C
+boqi@ubuntu:~/dev$ 
+
+boqi@ubuntu:~/dev$ keytool -import -alias client -file client_pubkey.rsa -keystore server_truststore.jks -storepass server_truststore_password
+Owner: CN=client, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Issuer: CN=client, OU=cxf, O=bq, L=New York, ST=NY, C=US
+Serial number: 563396c2
+Valid from: Wed Feb 26 21:26:58 EST 2014 until: Tue May 27 22:26:58 EDT 2014
+Certificate fingerprints:
+	 MD5:  C7:31:DD:45:F6:B7:6D:2E:06:A1:69:B8:C0:09:E2:94
+	 SHA1: C1:AC:BC:64:80:75:9A:B0:63:78:E0:3F:84:8C:BF:20:D8:2C:73:67
+	 SHA256: E5:DF:80:F7:36:7C:EA:D0:C2:32:25:5E:D2:71:6B:10:A4:03:CF:CC:73:8A:29:5E:91:50:63:11:31:7A:B5:E1
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 3F 86 3E 4A 74 E3 A7 0A   75 02 B1 E5 33 D3 FB 0F  ?.>Jt...u...3...
+0010: AF 6B 2E A0                                        .k..
+]
+]
+
+Trust this certificate? [no]:  yes
+Certificate was added to keystore
+boqi@ubuntu:~/dev$ keytool -list -keystore server_truststore.jks -storepass server_truststore_password
+
+Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 2 entries
+
+client, Feb 27, 2014, trustedCertEntry, 
+Certificate fingerprint (SHA1): C1:AC:BC:64:80:75:9A:B0:63:78:E0:3F:84:8C:BF:20:D8:2C:73:67
+server, Feb 26, 2014, trustedCertEntry, 
+Certificate fingerprint (SHA1): 80:09:A4:F8:9D:94:23:07:17:6B:83:A3:D0:72:AC:AE:05:0C:A1:37

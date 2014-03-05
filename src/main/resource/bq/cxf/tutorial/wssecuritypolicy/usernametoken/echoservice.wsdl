@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- this is used to show wsdl first way to develop a webservice, publish webservice with a given wsdl file -->
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://bq.cxf.tutorial/echoservice" 
+	xmlns:wsp="http://www.w3.org/ns/ws-policy"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:wsaws="http://www.w3.org/2005/08/addressing" 
+	xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+	xmlns:sp13="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802"
+	name="echoservice" targetNamespace="http://bq.cxf.tutorial/echoservice">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://bq.cxf.tutorial/echoservice">
+      <xsd:element name="echo">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="echoResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="out" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="echoRequest">
+    <wsdl:part element="tns:echo" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="echoResponse">
+    <wsdl:part element="tns:echoResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="echoservice">
+    <wsdl:operation name="echo">
+      <wsdl:input message="tns:echoRequest"/>
+      <wsdl:output message="tns:echoResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="EchoPlaintextBinding" type="tns:echoservice">
+  	<wsp:PolicyReference URI="#EchoPlaintextPolicy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EchoPlaintextNoPasswordBinding" type="tns:echoservice">
+  	<wsp:PolicyReference URI="#EchoPlaintextNoPasswordPolicy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EchoDigestBinding" type="tns:echoservice">
+  	<wsp:PolicyReference URI="#EchoDigestPolicy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EchoTLSSupportingBinding" type="tns:echoservice">
+  	<wsp:PolicyReference URI="#EchoTLSSupportingPolicy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EchoAsymmetricSESupportingBinding" type="tns:echoservice">
+  	<wsp:PolicyReference URI="#EchoAsymmetricSESupportingPolicy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EchoAsymmetricEncrSupportingBinding" type="tns:echoservice">
+  	<wsp:PolicyReference URI="#EchoAsymmetricEncrSupportingPolicy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="EchoSymmetricSESupportingBinding" type="tns:echoservice">
+  	<wsp:PolicyReference URI="#EchoSymmetricSESupportingPolicy"/>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="echoservice">
+       <wsdl:port name="EchoPlaintextPort" binding="tns:EchoPlaintextBinding">
+           <soap:address location="http://localhost/EchoUTPlaintext"/>
+       </wsdl:port>
+       <wsdl:port name="EchoPlaintextNoPasswordPort" binding="tns:EchoPlaintextNoPasswordBinding">
+           <soap:address location="http://localhost/EchoUTPlaintextNoPassword"/>
+       </wsdl:port>
+       <wsdl:port name="EchoDigestPort" binding="tns:EchoDigestBinding">
+           <soap:address location="http://localhost/EchoUTDigest"/>
+       </wsdl:port>
+       <wsdl:port name="EchoTLSSupportingPort" binding="tns:EchoTLSSupportingBinding">
+           <soap:address location="https://localhost/EchoUTTLSSupporting"/>
+       </wsdl:port>
+       <wsdl:port name="EchoAsymmetricSESupportingPort" binding="tns:EchoAsymmetricSESupportingBinding">
+           <soap:address location="http://localhost/EchoUTAsymmetricSESupporting"/>
+       </wsdl:port>
+       <wsdl:port name="EchoAsymmetricEncrSupportingPort" binding="tns:EchoAsymmetricEncrSupportingBinding">
+           <soap:address location="http://localhost/EchoUTAsymmetricEncrSupporting"/>
+       </wsdl:port>
+       <wsdl:port name="EchoSymmetricSESupportingPort" binding="tns:EchoSymmetricSESupportingBinding">
+           <soap:address location="http://localhost/EchoUTSymmetricSESupporting"/>
+       </wsdl:port>
+   </wsdl:service>
+   <!-- 2.1.1.1 UsernameToken with plain text password -->
+   <wsp:Policy wsu:Id="EchoPlaintextPolicy">
+       <sp:SupportingTokens>
+           <wsp:Policy>
+               <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                   <wsp:Policy/>
+               </sp:UsernameToken>
+           </wsp:Policy>
+       </sp:SupportingTokens>
+   </wsp:Policy>
+   <!-- 2.1.1.2 UsernameToken without password -->
+   <wsp:Policy wsu:Id="EchoPlaintextNoPasswordPolicy">
+       <sp:SupportingTokens>
+           <wsp:Policy>
+               <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                   <wsp:Policy>
+                       <sp:NoPassword/>
+                   </wsp:Policy>
+               </sp:UsernameToken>
+           </wsp:Policy>
+       </sp:SupportingTokens>
+   </wsp:Policy>
+   <!-- 2.1.1.3 UsernameToken with timestamp, nonce and password hash -->
+   <wsp:Policy wsu:Id="EchoDigestPolicy">
+       <sp:SupportingTokens>
+           <wsp:Policy>
+               <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                   <wsp:Policy>
+                       <sp:HashPassword/>
+                   </wsp:Policy>
+               </sp:UsernameToken>
+           </wsp:Policy>
+       </sp:SupportingTokens>
+   </wsp:Policy>
+   <!-- 2.1.2.1 UsernameToken as supporting token -->
+   <wsp:Policy wsu:Id="EchoTLSSupportingPolicy">
+       <sp:TransportBinding>
+           <wsp:Policy>
+               <sp:TransportToken>
+                   <wsp:Policy>
+                       <sp:HttpsToken>
+                           <wsp:Policy/>
+                       </sp:HttpsToken>
+                   </wsp:Policy>
+               </sp:TransportToken>
+               <sp:AlgorithmSuite>
+                   <wsp:Policy>
+                       <sp:Basic128/>
+                   </wsp:Policy>
+               </sp:AlgorithmSuite>
+               <sp:Layout>
+                   <wsp:Policy>
+                       <sp:Strict/>
+                   </wsp:Policy>
+               </sp:Layout>
+               <sp:IncludeTimestamp/>
+           </wsp:Policy>
+       </sp:TransportBinding>
+       <sp:SupportingTokens>
+           <wsp:Policy>
+               <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                   <wsp:Policy/>
+               </sp:UsernameToken>
+           </wsp:Policy>
+       </sp:SupportingTokens>
+   </wsp:Policy>
+   <!-- 2.1.3 (WSS 1.0) UsernameToken with Mutual X.509v3 Authentication, Sign, Encrypt -->
+   <wsp:Policy wsu:Id="EchoAsymmetricSESupportingPolicy">
+       <wsp:ExactlyOne>
+           <wsp:All>
+               <sp:AsymmetricBinding>
+                   <wsp:Policy>
+                       <sp:InitiatorToken>
+                           <wsp:Policy>
+                               <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                                   <wsp:Policy>
+                                       <sp:WssX509V3Token10/>
+                                   </wsp:Policy>
+                               </sp:X509Token>
+                           </wsp:Policy>
+                       </sp:InitiatorToken>
+                       <sp:RecipientToken>
+                           <wsp:Policy>
+                               <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                                   <wsp:Policy>
+                                       <sp:WssX509V3Token10/>
+                                   </wsp:Policy>
+                               </sp:X509Token>
+                           </wsp:Policy>
+                       </sp:RecipientToken>
+                       <sp:AlgorithmSuite>
+                           <wsp:Policy>
+                               <sp:Basic128/>
+                           </wsp:Policy>
+                       </sp:AlgorithmSuite>
+                       <sp:Layout>
+                           <wsp:Policy>
+                               <sp:Strict/>
+                           </wsp:Policy>
+                       </sp:Layout>
+                       <sp:IncludeTimestamp/>
+                       <sp:OnlySignEntireHeadersAndBody/>
+                   </wsp:Policy>
+               </sp:AsymmetricBinding>
+               <sp:Wss10>
+                   <wsp:Policy>
+                       <sp:MustSupportRefKeyIdentifier/>
+                   </wsp:Policy>
+               </sp:Wss10>
+               <sp:SignedEncryptedSupportingTokens>
+                   <wsp:Policy>
+                       <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                               <sp:WssUsernameToken10/>
+                           </wsp:Policy>
+                       </sp:UsernameToken>
+                   </wsp:Policy>
+               </sp:SignedEncryptedSupportingTokens>
+           </wsp:All>
+       </wsp:ExactlyOne>
+   </wsp:Policy>
+   <!-- 2.1.3.1 (WSS 1.0) Encrypted UsernameToken with X.509v3 -->
+   <!-- NOTE that the policy as specified in the spec appears to be incorrect - where it gives a -->
+   <!-- InitiatorEncryptionToken instead of a RecipientEncryptionToken policy -->
+   <!-- Also, a Timestamp must be signed, and so this is also excluded -->
+   <wsp:Policy wsu:Id="EchoAsymmetricEncrSupportingPolicy">
+       <sp:AsymmetricBinding>
+           <wsp:Policy>
+               <sp:RecipientEncryptionToken>
+                   <wsp:Policy>
+                       <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                               <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                       </sp:X509Token>
+                   </wsp:Policy>
+               </sp:RecipientEncryptionToken>
+               <sp:RecipientSignatureToken>
+                   <wsp:Policy>
+                       <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                               <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                       </sp:X509Token>
+                   </wsp:Policy>
+               </sp:RecipientSignatureToken>
+               <sp:AlgorithmSuite>
+                   <wsp:Policy>
+                       <sp:Basic128/>
+                   </wsp:Policy>
+               </sp:AlgorithmSuite>
+               <sp:Layout>
+                   <wsp:Policy>
+                       <sp:Lax/>
+                   </wsp:Policy>
+               </sp:Layout>
+               <sp:OnlySignEntireHeadersAndBody/>
+           </wsp:Policy>
+       </sp:AsymmetricBinding>
+       <sp:Wss10>
+           <wsp:Policy>
+               <sp:MustSupportRefKeyIdentifier/>
+               <sp:MustSupportRefIssuerSerial/>
+           </wsp:Policy>
+       </sp:Wss10>
+       <sp:EncryptedSupportingTokens>
+           <wsp:Policy>
+               <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                   <wsp:Policy>
+                       <sp:HashPassword/>
+                       <sp:WssUsernameToken10/>
+                   </wsp:Policy>
+               </sp:UsernameToken>
+           </wsp:Policy>
+       </sp:EncryptedSupportingTokens>
+   </wsp:Policy>
+   <!-- 2.1.4 (WSS 1.1), User Name with Certificates, Sign, Encrypt -->
+   <wsp:Policy wsu:Id="EchoSymmetricSESupportingPolicy">
+       <wsp:ExactlyOne>
+           <wsp:All>
+               <sp:SymmetricBinding>
+                   <wsp:Policy>
+                       <sp:ProtectionToken>
+                           <wsp:Policy>
+                               <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                                   <wsp:Policy>
+                                       <sp:RequireThumbprintReference/>
+                                       <sp:WssX509V3Token11/>
+                                   </wsp:Policy>
+                               </sp:X509Token>
+                           </wsp:Policy>
+                       </sp:ProtectionToken>
+                       <sp:AlgorithmSuite>
+                           <wsp:Policy>
+                               <sp:Basic128/>
+                           </wsp:Policy>
+                       </sp:AlgorithmSuite>
+                       <sp:Layout>
+                           <wsp:Policy>
+                               <sp:Strict/>
+                           </wsp:Policy>
+                       </sp:Layout>
+                       <sp:IncludeTimestamp/>
+                       <sp:OnlySignEntireHeadersAndBody/>
+                   </wsp:Policy>
+               </sp:SymmetricBinding>
+               <sp:SignedEncryptedSupportingTokens>
+                   <wsp:Policy>
+                       <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                               <sp:WssUsernameToken11/>
+                           </wsp:Policy>
+                       </sp:UsernameToken>
+                   </wsp:Policy>
+               </sp:SignedEncryptedSupportingTokens>
+               <sp:Wss11>
+                   <wsp:Policy>
+                       <sp:MustSupportRefKeyIdentifier/>
+                       <sp:MustSupportRefIssuerSerial/>
+                       <sp:MustSupportRefThumbprint/>
+                       <sp:MustSupportRefEncryptedKey/>
+                   </wsp:Policy>
+               </sp:Wss11>
+           </wsp:All>
+       </wsp:ExactlyOne>
+   </wsp:Policy>
+   <wsp:Policy wsu:Id="EchoBinding_Echo_Input_Policy">
+       <wsp:ExactlyOne>
+           <wsp:All>
+               <sp:EncryptedParts>
+                   <sp:Body/>
+               </sp:EncryptedParts>
+               <sp:SignedParts>
+                   <sp:Body/>
+               </sp:SignedParts>
+           </wsp:All>
+       </wsp:ExactlyOne>
+   </wsp:Policy>
+   <wsp:Policy wsu:Id="EchoBinding_Echo_Input_Policy2">
+       <wsp:ExactlyOne>
+           <wsp:All>
+               <sp:EncryptedParts>
+                   <sp:Body/>
+               </sp:EncryptedParts>
+           </wsp:All>
+       </wsp:ExactlyOne>
+   </wsp:Policy>
+   <wsp:Policy wsu:Id="EchoBinding_Echo_Output_Policy">
+       <wsp:ExactlyOne>
+           <wsp:All>
+               <sp:EncryptedParts>
+                   <sp:Body/>
+               </sp:EncryptedParts>
+               <sp:SignedParts>
+                   <sp:Body/>
+               </sp:SignedParts>
+           </wsp:All>
+       </wsp:ExactlyOne>
+   </wsp:Policy>
+   <wsp:Policy wsu:Id="EchoBinding_Echo_Output_Policy2">
+       <wsp:ExactlyOne>
+           <wsp:All>
+               <sp:SignedParts>
+                   <sp:Body/>
+               </sp:SignedParts>
+           </wsp:All>
+       </wsp:ExactlyOne>
+   </wsp:Policy>
+</wsdl:definitions>

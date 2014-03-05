@@ -1,0 +1,54 @@
+<!-- hope to embed binding info into wsdl file -->
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws" xmlns:tns="http://bq.cxf.tutorial/asyecho" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="echoasyn" targetNamespace="http://bq.cxf.tutorial/asyecho">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://bq.cxf.tutorial/asyecho">
+      <xsd:element name="echo">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="echoResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="returnMessage" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="echoRequest">
+    <wsdl:part element="tns:echo" name="message"/>
+  </wsdl:message>
+  <wsdl:message name="echoResponse">
+    <wsdl:part element="tns:echoResponse" name="returnmessage"/>
+  </wsdl:message>
+  <wsdl:portType name="AsynEchoService">
+    <wsdl:operation name="echo">
+      <wsdl:input message="tns:echoRequest"/>
+      <wsdl:output message="tns:echoResponse"/>
+    </wsdl:operation>
+    <jaxws:bindings>
+      <jaxws:enableAsyncMapping>true</jaxws:enableAsyncMapping>
+    </jaxws:bindings>
+  </wsdl:portType>
+  <wsdl:binding name="echoasynSOAP" type="tns:AsynEchoService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="http://bq.cxf.tutorial/asyechoNewOperation"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AsynEchoWsdlService">
+    <wsdl:port binding="tns:echoasynSOAP" name="echoasynSOAP">
+      <soap:address location="http://www.example.org/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

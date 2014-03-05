@@ -22,23 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.cxf.tutorial.simple1.server;
+package bq.cxf.tutorial.simple1.dynamic;
 
-import javax.jws.WebService;
+import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 
 /**
  * <b>  </b>
  *
- * <p> </p>
+ * <p> need to run wsdlfirst.server first</p>
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at Feb 19, 2014 10:27:25 PM
+ * Created at Feb 23, 2014 10:48:56 AM
  *
  */
-@WebService
-public interface EchoService {
+public class Client {
 
-	public String echo(String msg);
+	public static void main(String[] args){
+		String wsdl = "http://localhost:8083/jaxws/ws/echoservice?wsdl";
+//		String wsdl = "http://localhost:8080/jaxws/gen/echoservice?wsdl";
+		JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+		org.apache.cxf.endpoint.Client client = dcf.createClient(wsdl);
+		
+		// simple invoke
+		try {
+			Object[] res = client.invoke("echoString", "hello, world!");
+			System.out.println("Echo response: " + res[0]);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// 
+	}
 	
 }

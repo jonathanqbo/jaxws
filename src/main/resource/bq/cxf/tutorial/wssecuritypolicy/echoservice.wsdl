@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- this is used to show wsdl first way to develop a webservice, publish webservice with a given wsdl file -->
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://bq.cxf.tutorial/echoservice/" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:wsp="http://www.w3.org/2006/07//ws-policy"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+	name="echoservice" targetNamespace="http://bq.cxf.tutorial/echoservice/">
+	<!-- xmlns:wsp="http://www.w3.org/ns/ws-policy"  -->
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://bq.cxf.tutorial/echoservice/">
+      <xsd:element name="echo">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="echoResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="out" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="echoRequest">
+    <wsdl:part element="tns:echo" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="echoResponse">
+    <wsdl:part element="tns:echoResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="echoservice">
+    <wsdl:operation name="echo">
+      <wsdl:input message="tns:echoRequest"/>
+      <wsdl:output message="tns:echoResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="echoserviceSOAP" type="tns:echoservice">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <wsp:PolicyReference URI="#echoservice_policy"/>
+      <soap:operation soapAction="http://bq.cxf.tutorial/echoservice/echo"/>
+      <wsdl:input>
+      	 <!--  -->
+     	 <wsp:PolicyReference URI="#echoservice_in_policy" wsdl:required="true"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+      	<!--  -->
+      	<wsp:PolicyReference URI="#echoservice_out_policy"/>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="echoservice">
+    <wsdl:port binding="tns:echoserviceSOAP" name="echoserviceSOAP">
+      <soap:address location="http://tutorial.cxf.bq/"/>
+    </wsdl:port>
+  </wsdl:service>
+  <wsp:Policy wsu:Id="echoservice_policy">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Strict/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:TripleDesRsa15/>
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+                  <sp:EncryptSignature/>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+            <sp:Wss10>
+               <wsp:Policy>
+                  <sp:MustSupportRefIssuerSerial/>
+               </wsp:Policy>
+            </sp:Wss10>
+         </wsp:All>
+      </wsp:ExactlyOne>
+   </wsp:Policy>
+   <wsp:Policy wsu:Id="echoservice_in_policy">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:EncryptedParts>
+               <sp:Body/>
+            </sp:EncryptedParts>
+            <sp:SignedParts>
+               <sp:Body/>
+            </sp:SignedParts>
+         </wsp:All>
+      </wsp:ExactlyOne>
+   </wsp:Policy>
+   <wsp:Policy wsu:Id="echoservice_out_policy">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:EncryptedParts>
+               <sp:Body/>
+            </sp:EncryptedParts>
+            <sp:SignedParts>
+               <sp:Body/>
+            </sp:SignedParts>
+         </wsp:All>
+      </wsp:ExactlyOne>
+   </wsp:Policy>
+</wsdl:definitions>

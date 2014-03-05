@@ -1,0 +1,19 @@
+HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 464
+Server: Jetty(8.1.14.v20131031)
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Header>
+      <ns2:messageHeader xmlns:ns2="http://bq.cxf.tutorial/echoservicewithheader/">
+         <sender>jonathan.q.bo@gmail.com</sender>
+         <isEncypt>false</isEncypt>
+      </ns2:messageHeader>
+   </soap:Header>
+   <soap:Body>
+      <ns2:message xmlns:ns2="http://bq.cxf.tutorial/echoservicewithheader/">
+         <id>message01</id>
+         <name>offer from heaven</name>
+         <content>hello, world!</content>
+      </ns2:message>
+   </soap:Body></soap:Envelope>
